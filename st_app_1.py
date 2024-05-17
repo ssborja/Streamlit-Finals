@@ -15,7 +15,7 @@ import numpy as np
 # Load the model with caching
 @st.cache(allow_output_mutation=True)
 def load_model():
-    model = tf.keras.models.load_model('cifar100_model.hdf5')  # Updated to your CIFAR-100 model
+    model = tf.keras.models.load_model('SSB.hdf5')  # Updated to your CIFAR-100 model
     return model
 
 model = load_model()
