@@ -15,7 +15,7 @@ import numpy as np
 # Load the model with caching
 @st.cache(allow_output_mutation=True)
 def load_model():
-    model = tf.keras.models.load_model('SSB.hdf5')  # Updated to your CIFAR-100 model
+    model = tf.keras.models.load_model('cifar100_model.hdf5')  # Updated to your CIFAR-100 model
     return model
 
 model = load_model()
@@ -33,7 +33,7 @@ file = st.file_uploader("Choose an image...", type=["jpg", "png"])
 def import_and_predict(image_data, model):
     # Resize and rescale the image
     size = (32, 32)  # CIFAR-100 uses 32x32 images
-    image = ImageOps.fit(image_data, size, Image.ANTIALIAS)
+    image = ImageOps.fit(image_data, size, Image.Resampling.LANCZOS)  # Updated resampling method
     img = np.asarray(image)
     img_rescaled = img / 255.0  # Rescale as in training
     img_reshape = img_rescaled[np.newaxis, ...]  # Add batch dimension
@@ -48,7 +48,20 @@ else:
     st.image(image, use_column_width=True)
     prediction = import_and_predict(image, model)
     # Define CIFAR-100 label names based on your trained model's label assignment
-    class_names = ['apple', 'aquarium_fish', 'baby', 'bear', 'beaver', ..., 'wolf', 'woman', 'worm']  # Add all 100 labels
+    class_names = ['apple', 'aquarium_fish', 'baby', 'bear', 'beaver', 'bed', 'bee', 'beetle',
+                   'bicycle', 'bottle', 'bowl', 'boy', 'bridge', 'bus', 'butterfly', 'camel', 
+                   'can', 'castle', 'caterpillar', 'cattle', 'chair', 'chimpanzee', 'clock', 
+                   'cloud', 'cockroach', 'couch', 'crab', 'crocodile', 'cup', 'dinosaur', 
+                   'dolphin', 'elephant', 'flatfish', 'forest', 'fox', 'girl', 'hamster', 
+                   'house', 'kangaroo', 'keyboard', 'lamp', 'lawn_mower', 'leopard', 'lion', 
+                   'lizard', 'lobster', 'man', 'maple_tree', 'motorcycle', 'mountain', 'mouse', 
+                   'mushroom', 'oak_tree', 'orange', 'orchid', 'otter', 'palm_tree', 'pear', 
+                   'pickup_truck', 'pine_tree', 'plain', 'plate', 'poppy', 'porcupine', 'possum', 
+                   'rabbit', 'raccoon', 'ray', 'road', 'rocket', 'rose', 'sea', 'seal', 'shark', 
+                   'shrew', 'skunk', 'skyscraper', 'snail', 'snake', 'spider', 'squirrel', 
+                   'streetcar', 'sunflower', 'sweet_pepper', 'table', 'tank', 'telephone', 
+                   'television', 'tiger', 'tractor', 'train', 'trout', 'tulip', 'turtle', 
+                   'wardrobe', 'whale', 'willow_tree', 'wolf', 'woman', 'worm']
     predicted_class = np.argmax(prediction, axis=1)
     result = "This image most likely belongs to a {}.".format(class_names[predicted_class[0]])
     st.success(result)
